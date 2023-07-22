@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hack Animation</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .hahaha {
+      font-size: 30px;
+      position: absolute;
+      bottom: -40px;
+      color: white;
+      letter-spacing: 10px;
+      line-height: 75px;
+      visibility: hidden;
+    }
+    #fullscreen-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      display: none;
+      pointer-events: none; /* 画像がクリックを妨げないようにする */
+    }
+    #search-form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #search-input {
+      font-size: 20px;
+      padding: 8px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      width: 400px;
+      margin-right: 5px;
+      transition: all 0.3s ease;
+    }
+    #search-button {
+      font-size: 20px;
+      padding: 8px 15px;
+      border: none;
+      background-color: #4285F4;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #search-form.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-50px);
+    }
+  </style>
+</head>
+<body>
+  <div id="search-form">
+    <input type="text" id="search-input" placeholder="Enter your search query">
+    <button id="search-button">Search</button>
+  </div>
+  <script>
+    let animationActive = false;
+    let elements = [];
+    let lastCloneTime = 1;
+    const audio1 = new Audio("https://github.com/hirotomoki12345/hirotomoki12345.github.io/raw/main/nc179633.wav");
+    const audio2 = new Audio("https://github.com/hirotomoki12345/hirotomoki12345.github.io/raw/main/%E3%82%A2%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%86%E3%83%BC%E3%83%AB%E5%85%A8%E5%8A%B9%E6%9E%9C%E9%9F%B3%E9%9B%86%20(mp3cut.net).mp3");
+    const audio3 = new Audio("https://github.com/hirotomoki12345/hirotomoki12345.github.io/raw/main/Warning-Siren04-12(Reverb-High-Long).mp3"); // 適切なURLに置き換えてください
+    const imageUrl = "https://github.com/hirotomoki12345/hirotomoki12345.github.io/blob/main/Screenshot%202023-07-22%2021.10.55.png?raw=true"; // 画像のURLを適切に置き換えてください
+
+    function getRandomSpeed(baseSpeed, speedVariation) {
+      return baseSpeed + Math.random() * speedVariation * 2 - speedVariation;
+    }
+
+    function createTextElement(text) {
+      const element = document.createElement('div');
+      element.textContent = text;
+      element.classList.add('hahaha');
+      element.style.fontSize = '30px';
+      element.style.transform = 'rotate(0deg)';
+      document.body.appendChild(element);
+      return element;
+    }
+
+    // Animation function
+    function animate() {
+      if (animationActive) {
+        let newText = createTextElement('HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA');
+        newText.style.bottom = -40 + 'px';
+        elements.push(newText);
+
+        const currentTime = performance.now();
+        const interval = 1000;
+        const baseSpeed = 40;
+        const speedVariation = 10;
+
+        if (currentTime - lastCloneTime > interval) {
+          lastCloneTime = currentTime;
+          createTextElement('HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA');
+        }
+
+        elements.forEach((element, index) => {
+          let position = parseInt(element.style.bottom, 10);
+          let speed = getRandomSpeed(baseSpeed, speedVariation);
+          position += speed;
+
+          if (position < window.innerHeight) {
+            element.style.bottom = position + 'px';
+            element.style.visibility = 'visible';
+          } else {
+            element.remove();
+            elements.splice(index, 1);
+          }
+        });
+
+        requestAnimationFrame(animate);
+      } else {
+        elements.forEach((element) => {
+          element.style.transform = 'rotate(5deg)';
+        });
+
+        // Play audio2 and trigger intense animation for 5 seconds
+        setTimeout(function() {
+          audio2.play().catch((error) => {
+            console.error('Failed to play audio2:', error);
+          });
+
+          // Trigger intense animation for 5 seconds
+          let endTime = performance.now() + 5000; // 5000 milliseconds (5 seconds) animation duration
+          function intenseAnimation() {
+            if (performance.now() < endTime) {
+              elements.forEach((element) => {
+                element.style.transition = 'transform 0.2s, left 0.2s, top 0.2s';
+                element.style.transform = 'rotate(' + getRandomRotation() + 'deg)';
+                element.style.left = getRandomPosition() + 'px';
+                element.style.top = getRandomPosition() + 'px';
+              });
+              requestAnimationFrame(intenseAnimation);
+            } else {
+              elements.forEach((element) => {
+                element.style.transform = 'rotate(5deg)';
+                element.style.transition = ''; // Reset the transition property
+              });
+              // Play audio3 after a short delay
+              setTimeout(function() {
+                audio3.play().catch((error) => {
+                  console.error('Failed to play audio3:', error);
+                });
+              }, 1000); // 1000 milliseconds delay (1 second)
+
+              // Display fullscreen image after a delay
+              setTimeout(function() {
+                displayFullscreenImage();
+              }, 2000); // 2000 milliseconds delay (2 seconds)
+            }
+          }
+          intenseAnimation();
+        }, 1000); // 1000 milliseconds delay (1 second)
+      }
+    }
+
+    // Generate random rotation angle
+    function getRandomRotation() {
+      return Math.random() * 360; // Random rotation angle between 0 and 360 degrees
+    }
+
+    // Generate random position
+    function getRandomPosition() {
+      return Math.random() * (window.innerWidth - 30); // Random position within the window width (considering 30px font size)
+    }
+
+    // Stop the animation and play audio2 when the sound ends
+    function stopAnimation() {
+      animationActive = false;
+      elements.forEach((element) => {
+        element.style.transform = 'rotate(5deg)';
+        element.style.transition = ''; // Reset the transition property
+      });
+      audio1.pause();
+      audio1.currentTime = 0; // Rewind the audio1 to the beginning
+
+      // Play audio2 after a short delay
+      setTimeout(function() {
+        audio2.play().catch((error) => {
+          console.error('Failed to play audio2:', error);
+        });
+      }, 1000); // 1000 milliseconds delay (1 second)
+    }
+
+    // Start the animation and play audio1
+    function startAnimation() {
+      animationActive = true;
+      elements = [];
+      lastCloneTime = 1;
+      animate();
+      // Play audio1
+      audio1.play().catch((error) => {
+        console.error('Failed to play audio1:', error);
+      });
+
+      // Stop the animation and play audio2 when audio1 ends
+      audio1.addEventListener('ended', function() {
+        stopAnimation();
+      });
+
+      // Hide the search form
+      const searchForm = document.getElementById('search-form');
+      searchForm.classList.add('hidden');
+    }
+
+       // Function to display fullscreen image and open "https://google.com" after a short delay
+    function displayFullscreenImageAndOpenGoogle() {
+      const fullscreenImage = document.createElement('img');
+      fullscreenImage.src = imageUrl;
+      fullscreenImage.id = 'fullscreen-image';
+      document.body.appendChild(fullscreenImage);
+      opengoogle();
+    }
+
+    // Function to open "https://google.com" in a new window
+    function opengoogle() {
+      for (let i = 0; i < 50; i++) {
+        window.open("https://google.com/");
+      }
+    }
+
+    // Trigger displayFullscreenImageAndOpenGoogle() when the animation ends
+    audio3.addEventListener('ended', function() {
+      displayFullscreenImageAndOpenGoogle();
+    });
+
+    // Trigger startAnimation() when the search button is clicked
+    const searchButton = document.getElementById('search-button');
+    searchButton.addEventListener('click', function() {
+      startAnimation();
+    });
+      
+  </script>
+</body>
+</html>
